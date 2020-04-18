@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Http;
+using System.Net;
+using Microsoft.AspNetCore.Diagnostics;
+using DatingApp.API.Helpers;
 
 namespace DatingApp.API
 {
@@ -35,16 +38,20 @@ namespace DatingApp.API
         {
             services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
-            services.AddCors(options => {
+            services.AddCors(options =>
+            {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
-                                 builder =>{
+                                 builder =>
+                                 {
                                      builder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
                                  });
             });
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options => {
-                    options.TokenValidationParameters = new TokenValidationParameters{
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
                         ValidateIssuer = false,
@@ -62,6 +69,20 @@ namespace DatingApp.API
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler(builder => {
+                    builder.Run(async context => {
+                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+                        var error = context.Features.Get<IExceptionHandlerFeature>();
+                        if(error != null){
+                            // context.Response.AddApplicationError(error.Error.Message);
+                            await context.Response.WriteAsync(error.Error.Message);
+                        }
+                    });
+                });
+            }
 
             // app.UseHttpsRedirection();
 
@@ -72,8 +93,9 @@ namespace DatingApp.API
             app.UseCors();
 
             app.UseAuthorization();
-            
-            app.UseEndpoints(endpoints => {
+
+            app.UseEndpoints(endpoints =>
+            {
                 endpoints.MapControllers();
             });
         }
