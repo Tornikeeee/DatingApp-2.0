@@ -9,12 +9,14 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Cors;
 
 namespace DatingApp.API.Controllers
 {
 
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("_myAllowSpecificOrigins")]
     public class AuthController :ControllerBase
     {
         private readonly IAuthRepository _repo;
@@ -26,6 +28,7 @@ namespace DatingApp.API.Controllers
             _config = config;
         }
 
+        [EnableCors("_myAllowSpecificOrigins")]
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
         {
@@ -45,6 +48,7 @@ namespace DatingApp.API.Controllers
             return StatusCode(201);       
         }
 
+        [EnableCors("_myAllowSpecificOrigins")]
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
         {

@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace DatingApp.API
 {
@@ -27,12 +28,19 @@ namespace DatingApp.API
 
         public IConfiguration Configuration { get; }
 
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
-            services.AddCors();
+            services.AddCors(options => {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                 builder =>{
+                                     builder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+                                 });
+            });
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
@@ -43,6 +51,8 @@ namespace DatingApp.API
                         ValidateAudience = false,
                     };
                 });
+
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,14 +68,12 @@ namespace DatingApp.API
             app.UseRouting();
 
             app.UseAuthentication();
+
+            app.UseCors();
+
             app.UseAuthorization();
-
-            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
+            
+            app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
             });
         }
