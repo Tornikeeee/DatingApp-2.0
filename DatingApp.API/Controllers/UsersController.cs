@@ -4,6 +4,7 @@ using AutoMapper;
 using DatingApp.API.Data;
 using DatingApp.API.Dtos;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DatingApp.API.Controllers
@@ -11,6 +12,7 @@ namespace DatingApp.API.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("_myAllowSpecificOrigins")]
     public class UsersController : ControllerBase
     {
         private readonly IDatingRepository _repo;
@@ -21,6 +23,7 @@ namespace DatingApp.API.Controllers
             _repo = repo;
         }
 
+        [EnableCors("_myAllowSpecificOrigins")]
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
@@ -30,6 +33,7 @@ namespace DatingApp.API.Controllers
             return Ok(usersToReturn);
         }
 
+        [EnableCors("_myAllowSpecificOrigins")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
