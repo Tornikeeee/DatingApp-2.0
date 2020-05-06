@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Cors;
+using AutoMapper;
 
 namespace DatingApp.API.Controllers
 {
@@ -19,11 +20,13 @@ namespace DatingApp.API.Controllers
     [EnableCors("_myAllowSpecificOrigins")]
     public class AuthController : ControllerBase
     {
+        private readonly IMapper _mapper;
         private readonly IAuthRepository _repo;
         private readonly IConfiguration _config;
 
-        public AuthController(IAuthRepository repo, IConfiguration config)
+        public AuthController(IAuthRepository repo, IConfiguration config, IMapper mapper)
         {
+            _mapper = mapper;
             _repo = repo;
             _config = config;
         }
@@ -80,9 +83,12 @@ namespace DatingApp.API.Controllers
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
+            var user = _mapper.Map<UserForListDto>(userFromRepo);
+
             return Ok(new
             {
-                token = tokenHandler.WriteToken(token)
+                token = tokenHandler.WriteToken(token),
+                user
             });
         }
     }

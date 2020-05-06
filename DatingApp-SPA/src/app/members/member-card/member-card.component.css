@@ -36,3 +36,10 @@
 .animate {
     transition: all 0.3s ease-in-out;
 } 
+
+.social_icons {
+  /* padding: 5px 10px !important; */
+  padding: 0 !important;
+  width: 30px;
+  height: 30px;
+}

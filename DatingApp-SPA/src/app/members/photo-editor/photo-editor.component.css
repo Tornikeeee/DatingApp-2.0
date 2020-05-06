@@ -1,0 +1,23 @@
+.photo_icon{
+    padding: 0px !important;
+    width: 55px;
+    height: 40px;
+}
+
+img.img-thumbnail{
+    height: 200px !important;
+    min-width: 200px !important;
+    margin-bottom: 2px;
+}
+
+.btn_text{
+    font-size: 14px;
+}
+
+.nv-file-over{
+    border: dotted 3px #4BBF73 !important;
+}
+
+input[type = file]{
+    color: transparent;
+}
