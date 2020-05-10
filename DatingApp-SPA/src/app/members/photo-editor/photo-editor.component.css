@@ -21,3 +21,17 @@ img.img-thumbnail{
 input[type = file]{
     color: transparent;
 }
+
+.single_photo {
+    margin-bottom: 15px;
+}
+.my-drop-zone {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.my-drop-zone .text {
+    padding-top: 10px;
+}
