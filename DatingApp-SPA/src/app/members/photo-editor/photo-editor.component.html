@@ -15,7 +15,7 @@
         class="photo_icon btn btn-sm btn-danger"
         type="button"
         (click)="deletePhoto(photo.id)"
-        [disabled] = "photo.isMain"
+        [disabled]="photo.isMain"
       >
         <i class="fa fa-trash-o fa-2x"></i>
       </button>
@@ -23,8 +23,8 @@
   </div>
 
   <div class="col-sm-4">
-  <div class="image_upload"
-
+    <div
+      class="image_upload"
       ng2FileDrop
       [ngClass]="{ 'nv-file-over': hasBaseDropZoneOver }"
       (fileOver)="fileOverBase($event)"
@@ -40,7 +40,6 @@
 <div class="row mt-3">
   <div class="col-md-3">
     <h3 class="h3_add">Add photos</h3>
-    
 
     Multiple
     <input type="file" ng2FileSelect [uploader]="uploader" multiple /><br />
